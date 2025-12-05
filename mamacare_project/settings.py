@@ -16,7 +16,35 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-produc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+# ALLOWED_HOSTS configuration
+# For Render deployment, automatically include .onrender.com domains
+allowed_hosts_default = 'localhost,127.0.0.1'
+
+# Check for Render environment variables first
+render_external_url = os.environ.get('RENDER_EXTERNAL_URL', '')
+render_service_name = os.environ.get('RENDER_SERVICE_NAME', '')
+
+# Build allowed hosts list
+allowed_hosts_list = []
+
+# Add explicitly configured hosts
+if config('ALLOWED_HOSTS', default=None):
+    allowed_hosts_list.extend([h.strip() for h in config('ALLOWED_HOSTS').split(',') if h.strip()])
+
+# Auto-detect from Render environment
+if render_external_url:
+    from urllib.parse import urlparse
+    parsed = urlparse(render_external_url)
+    if parsed.netloc:
+        allowed_hosts_list.append(parsed.netloc)
+elif render_service_name:
+    allowed_hosts_list.append(f'{render_service_name}.onrender.com')
+
+# Add defaults if nothing else was found
+if not allowed_hosts_list:
+    allowed_hosts_list = [h.strip() for h in allowed_hosts_default.split(',') if h.strip()]
+
+ALLOWED_HOSTS = list(set(allowed_hosts_list))  # Remove duplicates
 
 
 # Application definition
