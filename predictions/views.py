@@ -22,14 +22,19 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # Health workers are regular users (not staff/admin by default)
-            user.is_staff = False
-            user.save()
-            messages.success(request, 'Registration successful! Please log in.')
-            return redirect('login')
-        else:
-            messages.error(request, 'Please correct the errors below.')
+            try:
+                user = form.save()
+                # Health workers are regular users (not staff/admin by default)
+                user.is_staff = False
+                user.save()
+                messages.success(request, 'Registration successful! Please log in.')
+                return redirect('login')
+            except Exception as e:
+                # Log the error for debugging
+                import traceback
+                error_details = traceback.format_exc()
+                print(f"Registration error: {error_details}")
+                messages.error(request, f'Registration failed: {str(e)}. Please contact support.')
     else:
         form = UserRegistrationForm()
     
