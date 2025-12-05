@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics & Reports - MamaCare{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    .chart-container {
+        position: relative;
+        height: 400px;
+        margin-bottom: 30px;
+    }
+    @media (max-width: 768px) {
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+    }
+    .stat-card {
+        border-left: 4px solid var(--primary-color);
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <h2 class="mb-0">
+        <i class="fas fa-chart-bar"></i> Analytics & Reports
+    </h2>
+    <div class="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'export_csv' %}" class="btn btn-primary">
+            <i class="fas fa-download"></i> Export CSV
+        </a>
+    </div>
+</div>
+
+<!-- Date Range Filter -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-filter"></i> Filter by Time Period</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-12 col-md-4">
+                <label class="form-label">Time Period</label>
+                <select name="days" class="form-select" onchange="this.form.submit()">
+                    <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 days</option>
+                    <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 days</option>
+                    <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 days</option>
+                    <option value="180" {% if days == 180 %}selected{% endif %}>Last 6 months</option>
+                    <option value="365" {% if days == 365 %}selected{% endif %}>Last year</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-8 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-filter"></i> Apply Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Statistics -->
+{% if stats %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-clipboard-list fa-2x text-primary mb-2"></i>
+                <h5>Total Predictions</h5>
+                <h2 class="text-primary">{{ stats.total_predictions|default:0 }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                <h5>High Risk</h5>
+                <h2 class="text-danger">{{ stats.high_risk_count|default:0 }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                <h5>Low Risk</h5>
+                <h2 class="text-success">{{ stats.low_risk_count|default:0 }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card text-center">
+            <div class="card-body">
+                <i class="fas fa-users fa-2x text-info mb-2"></i>
+                <h5>Unique Patients</h5>
+                <h2 class="text-info">{{ stats.unique_patients|default:0 }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Charts -->
+<div class="row g-3">
+    <div class="col-12 col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-line"></i> Daily Predictions Trend</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="dailyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Risk Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-lg-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-area"></i> Condition Trends</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="conditionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Weekly Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Fetch chart data
+    fetch('{% url "analytics_data" %}?days={{ days }}')
+        .then(response => response.json())
+        .then(data => {
+            // Daily Predictions Chart
+            const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+            new Chart(dailyCtx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Total Predictions',
+                        data: data.total,
+                        borderColor: 'rgb(44, 90, 160)',
+                        backgroundColor: 'rgba(44, 90, 160, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'High Risk',
+                        data: data.high_risk,
+                        borderColor: 'rgb(220, 53, 69)',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Low Risk',
+                        data: data.low_risk,
+                        borderColor: 'rgb(40, 167, 69)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+            
+            // Risk Distribution Pie Chart
+            const riskCtx = document.getElementById('riskChart').getContext('2d');
+            new Chart(riskCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['High Risk', 'Low Risk'],
+                    datasets: [{
+                        data: [
+                            data.high_risk.reduce((a, b) => a + b, 0),
+                            data.low_risk.reduce((a, b) => a + b, 0)
+                        ],
+                        backgroundColor: ['rgb(220, 53, 69)', 'rgb(40, 167, 69)']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Condition Trends Chart
+            const conditionCtx = document.getElementById('conditionChart').getContext('2d');
+            new Chart(conditionCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Preeclampsia',
+                        data: data.preeclampsia,
+                        backgroundColor: 'rgba(255, 193, 7, 0.8)'
+                    }, {
+                        label: 'GDM',
+                        data: data.gdm,
+                        backgroundColor: 'rgba(23, 162, 184, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+            
+            // Weekly Summary (group by week)
+            const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+            const weeklyData = groupByWeek(data.dates, data.total);
+            new Chart(weeklyCtx, {
+                type: 'bar',
+                data: {
+                    labels: weeklyData.weeks,
+                    datasets: [{
+                        label: 'Weekly Predictions',
+                        data: weeklyData.counts,
+                        backgroundColor: 'rgba(44, 90, 160, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+    
+    function groupByWeek(dates, counts) {
+        const weeks = [];
+        const weekCounts = [];
+        let currentWeek = null;
+        let weekSum = 0;
+        
+        dates.forEach((date, index) => {
+            const week = getWeekNumber(date);
+            if (currentWeek !== week) {
+                if (currentWeek !== null) {
+                    weeks.push(`Week ${currentWeek}`);
+                    weekCounts.push(weekSum);
+                }
+                currentWeek = week;
+                weekSum = counts[index];
+            } else {
+                weekSum += counts[index];
+            }
+        });
+        
+        if (currentWeek !== null) {
+            weeks.push(`Week ${currentWeek}`);
+            weekCounts.push(weekSum);
+        }
+        
+        return { weeks, counts: weekCounts };
+    }
+    
+    function getWeekNumber(dateStr) {
+        const date = new Date(dateStr);
+        const oneJan = new Date(date.getFullYear(), 0, 1);
+        const numberOfDays = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
+        return Math.ceil((numberOfDays + oneJan.getDay() + 1) / 7);
+    }
+</script>
+{% endblock %}
+

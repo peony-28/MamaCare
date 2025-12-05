@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}User Management - MamaCare{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <h2>
+        <i class="fas fa-user-cog"></i> User Management
+    </h2>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-users"></i> All Users</h5>
+    </div>
+    <div class="card-body">
+        {% if users %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Date Joined</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td><strong>{{ user.username }}</strong></td>
+                        <td>{{ user.get_full_name|default:"-" }}</td>
+                        <td>{{ user.email|default:"No email" }}</td>
+                        <td>
+                            {% if user.is_staff %}
+                                <span class="badge bg-warning">Admin</span>
+                            {% else %}
+                                <span class="badge bg-info">Health Worker</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            {% if user.last_login %}
+                                {{ user.last_login|date:"M d, Y H:i" }}
+                            {% else %}
+                                <span class="text-muted">Never</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                {% if user.is_active %}
+                                    <button type="submit" name="action" value="deactivate" 
+                                            class="btn btn-sm btn-warning"
+                                            onclick="return confirm('Are you sure you want to deactivate {{ user.username }}?')">
+                                        <i class="fas fa-ban"></i> Deactivate
+                                    </button>
+                                {% else %}
+                                    <button type="submit" name="action" value="activate" 
+                                            class="btn btn-sm btn-success"
+                                            onclick="return confirm('Are you sure you want to activate {{ user.username }}?')">
+                                        <i class="fas fa-check"></i> Activate
+                                    </button>
+                                {% endif %}
+                            </form>
+                            {% if not user.is_staff %}
+                            <a href="{% url 'health_worker_detail' user.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i> View Activity
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No users found.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

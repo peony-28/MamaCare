@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction Results - MamaCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">
+    <i class="fas fa-clipboard-check"></i> Risk Prediction Results
+</h2>
+
+{% if patient_id %}
+<!-- Patient Information -->
+<div class="alert alert-success mb-4">
+    <h5 class="alert-heading">
+        <i class="fas fa-user"></i> Patient Information
+    </h5>
+    <p class="mb-1">
+        <strong>Patient Name:</strong> {{ patient_name|default:"Unknown" }}
+    </p>
+    <p class="mb-0">
+        <strong>Patient ID:</strong> <code class="fs-5">{{ patient_id }}</code>
+    </p>
+    <small class="text-muted">Save this Patient ID for future visits. You can use it to look up this patient's history.</small>
+</div>
+{% endif %}
+
+<!-- Overall Assessment -->
+<div class="alert alert-info mb-4">
+    <h4 class="alert-heading">
+        <i class="fas fa-exclamation-triangle"></i> Overall Assessment
+    </h4>
+    <p class="mb-0 fs-5">
+        <strong>{{ predictions.overall_assessment }}</strong>
+    </p>
+</div>
+
+<!-- Detailed Results -->
+<div class="row mb-4 g-3">
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">General Health Risk</h5>
+                <h3 class="{% if predictions.general_risk == 'High' %}risk-high{% else %}risk-low{% endif %}">
+                    {{ predictions.general_risk }}
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Preeclampsia Risk</h5>
+                <h3 class="{% if 'Present' in predictions.preeclampsia_risk %}risk-high{% else %}risk-low{% endif %}">
+                    {{ predictions.preeclampsia_risk }}
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">Gestational Diabetes Risk</h5>
+                <h3 class="{% if 'GDM' in predictions.gdm_risk %}risk-moderate{% else %}risk-low{% endif %}">
+                    {{ predictions.gdm_risk }}
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommendations -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="fas fa-lightbulb"></i> Recommendations</h5>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            {% if predictions.general_risk == 'High' %}
+                <li class="list-group-item">
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    <strong>High Risk Detected:</strong> Immediate medical consultation and close monitoring recommended.
+                </li>
+            {% endif %}
+            {% if 'Present' in predictions.preeclampsia_risk %}
+                <li class="list-group-item">
+                    <i class="fas fa-exclamation-circle text-danger"></i>
+                    <strong>Preeclampsia Risk:</strong> Regular blood pressure monitoring and proteinuria screening required.
+                </li>
+            {% endif %}
+            {% if 'GDM' in predictions.gdm_risk %}
+                <li class="list-group-item">
+                    <i class="fas fa-exclamation-circle text-warning"></i>
+                    <strong>Gestational Diabetes:</strong> Blood glucose monitoring and dietary management advised.
+                </li>
+            {% endif %}
+            {% if predictions.general_risk == 'Low' and 'No' in predictions.preeclampsia_risk and 'Non-GDM' in predictions.gdm_risk %}
+                <li class="list-group-item">
+                    <i class="fas fa-check-circle text-success"></i>
+                    <strong>Low Risk:</strong> Continue routine antenatal care and regular check-ups.
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="text-center">
+    <a href="{% url 'predict' %}" class="btn btn-primary">
+        <i class="fas fa-redo"></i> New Prediction
+    </a>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+        <i class="fas fa-chart-line"></i> View Dashboard
+    </a>
+    <button onclick="window.print()" class="btn btn-outline-primary">
+        <i class="fas fa-print"></i> Print Results
+    </button>
+</div>
+{% endblock %}
+

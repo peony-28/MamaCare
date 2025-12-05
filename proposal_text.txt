@@ -1,0 +1,392 @@
+TITLE: A MACHINE LEARNING MODEL FOR PREDICTING MATERNAL HEALTH RISKS IN KENYA
+APT4900VB: FINAL-TERM PROJECT
+SEMESTER: FALL 2025
+SUPERVISOR: DR STANLEY GITHINJI
+STUDENT NAME: NELLIE NDUATI
+NUMBER: 658003
+Contents
+CHAPTER ONE: INTRODUCTION4
+1.0Introduction4
+1.1Background of the Study4
+1.2 Problem Statement6
+1.3 Project Objectives6
+1.3.1 Overall Goal6
+1.3.2 System Design and Development Objectives7
+1.4Project Questions7
+1.5 Scope of the Project7
+1.6 Limitations of the study8
+1.7 Significance of the Study8
+1.8 Chapter Summary9
+CHAPTER TWO: LITERATURE REVIEW10
+2.0 Introduction10
+2.1 Analysis, Comparison, and Criticism of Existing Projects10
+2.1.1 System One: EHR-based Preterm/Complication Prediction (United States)10
+2.1.2 System Two: Facility Delivery Prediction (Kenya)11
+2.1.3 System Three:  Postpartum Hemorrhage (PPH) Prediction (Kenya)11
+2.1.4 Summary Comparison12
+2.2 Literature Review Based on Research Objectives13
+2.2.1 Challenges of Old Systems13
+2.2.2 Benefits of the Proposed System14
+2.3 Chapter Summary14
+CHAPTER THREE: RESEARCH DESIGN AND METHODOLOGY15
+3.0 Introduction15
+3.1 Locality of the Project and Beneficiaries15
+3.2 Research Design Approach: Descriptive and Applied16
+3.3 SDLC Approach (Phased Plan)17
+3.3.1 Planning17
+3.3.2 Analysis17
+3.3.3 Design18
+3.3.4 Implementation19
+3.3.5 Testing20
+3.3.6 Deployment and Maintenance20
+3.4 System Testing Plan20
+3.4.1 Functional Testing20
+3.4.2 Model Evaluation Metrics21
+3.4.3 Performance Testing22
+3.4.4 Usability Testing22
+3.4.5 Compatibility Testing22
+3.5 Security Testing23
+3.5.1 Legal and Regulatory Alignment23
+3.5.2 Threat Modeling and OWASP Mapping23
+3.5.3 Security Tests23
+3.5.4 Data Handling Safeguards24
+3.5.5 MongoDB Security and Compliance Measures24
+3.6 Data Handling and Analysis25
+3.6.1 Data Sources and Preparation25
+3.6.2 Analysis Plan26
+3.6.3 Validation Strategy26
+3.7 Ethical Considerations26
+3.8 Chapter Summary27
+REFERENCES27
+CHAPTER ONE: INTRODUCTION
+Introduction 
+The project focuses on the development and design of a maternal health risk prediction system based on machine learning. Maternal mortality remains an ongoing problem globally and even more so in developing countries, as preventable complications continue to claim lives. The project exploits the growth in artificial intelligence to help healthcare staff by identifying susceptible mothers early enough. Its use is in improving health results, strengthening decision-making, and enabling Kenya's Sustainable Development Goal 3 (Good Health and Well-being) (United Nations, 2015).
+Background of the Study
+Maternal health outcomes have improved in developed countries due to early detection, advanced monitoring systems, and integration of digital health technologies into healthcare. For instance, health systems in the United States and the United Kingdom have employed predictive models to identify pregnancy complications such as preeclampsia and postpartum hemorrhage, averting preventable deaths. Japan also implemented mobile health technologies and artificial intelligence to provide personalized maternal care.
+Across Africa, several nations are exploring the use of data-driven technologies to enhance maternal health. In South Africa, healthcare monitoring platforms have been piloted that integrate digital records to track maternal and neonatal health. In Nigeria, mHealth platforms have been used to engage mothers and healthcare providers and enhance access to maternal health information. These initiatives highlight the growing deployment of digital health and predictive analytics as tools to reduce maternal mortality in resource-constrained settings.
+In Kenya, maternal health is one of the largest concerns. The Kenya Demographic and Health Survey (KDHS) 2022 estimates the maternal mortality ratio (MMR) at 367 deaths per 100,000 live births, much above the global target of fewer than 70 deaths per 100,000 (Kenya National Bureau of Statistics [KNBS], 2023). Recent research using machine learning models to forecast sub-national maternal mortality rates reiterated that some counties are still high-risk areas, the need for localized evidence-based interventions (Maina, Macharia, Mumo, & Okiro, 2024). A recent study published in 2023 also applied machine learning to predict postpartum hemorrhage (PPH) in a Kenyan population, showing the potential of these methods in maximizing maternal health outcomes (Mwakio, Otieno, & Wanyama, 2023).
+Despite the expansion of maternal health care accessibility by government programs such as Linda Mama and Beyond Zero, predictive instruments for early risk detection by health workers remain insufficient in most rural facilities. Even available systems continue to be manual and reactive, resulting in delays in interventions.
+In summary, rich countries illustrate predictive models' ability to reduce maternal mortality, and African countries are beginning to apply such approaches, and Kenya is in dire need of affordable, scalable solutions. This project seeks to fill this deficiency by developing a localized, machine learning–based system for maternal health risk prediction and clinical decision support.
+1.2 Problem Statement
+Maternal mortality in Kenya continues despite ongoing interventions. Certain deficiencies account for the problem:
+Delayed diagnosis of complications – Complications such as preeclampsia, gestational diabetes, and hypertension are typically diagnosed late in gestation (WHO, 2023).
+Inadequate record-keeping systems – Paper-based records in rural clinics make it difficult to track patients' histories across clinic visits (KNBS, 2023).
+Overloaded health workforce – Excessive patient load by health workers limits the scope of risk assessment depth (Maina et al., 2024).
+Inadequate predictive support systems – Existing digital technologies mostly provide reminders or data storage but minimal proactive risk prediction (Mwakio et al., 2023).
+The system outlined here addresses these gaps by employing machine learning to process maternal health data, providing timely, evidence-based advice to health workers to classify risk levels and act preventively.
+1.3 Project Objectives
+1.3.1 Overall Goal
+Overall, the goal of this project is to develop and construct a machine learning–driven maternal health risk prediction system to support healthcare workers in the detection of high-risk pregnancies and reducing preventable maternal deaths.
+1.3.2 System Design and Development Objectives
+To investigate the limitations and disadvantages of existing maternal health monitoring systems.
+To develop an intuitive system with machine learning to predict real-time maternal health risks.
+To compare the performance, usability, and efficacy of the system with traditional manual monitoring systems. 
+Project Questions
+What are the traditional problems of existing maternal health monitoring systems in Kenya?
+How does the proposed machine learning system in this research address these issues?
+How efficient is the system compared to traditional approaches in terms of usability, performance, and scalability?
+1.5 Scope of the Project
+The system will be implemented as a proof-of-concept web application based on a machine learning model. Simple patient details (age, BMI, blood pressure, complication history, number of previous births, and pregnancy status) will be inputted by medical professionals, and the model will output a risk score with recommendations. The prototype will be created for implementation in rural and sub-county health facilities in Kenya. An evolutionary step in the future would be to convert the system into a chatbot for mobile platforms such as WhatsApp, such that it becomes more accessible in low-resource settings.
+Stakeholders include community clinics, public health departments, pregnant women, and health workers. Maternal risk forecasting, not complete patient record keeping, is the scope to be limited, to keep things feasible in the project timeline.
+1.6 Limitations of the study
+Availability of Data: Health information at the patient level is confidential and will not always be available. For overcoming this problem, the project will make use of publicly accessible datasets on Kaggle or anonymized datasets.
+Time Limitations: The 13-week timeframe may only be able to create a prototype rather than an entirely deployed system.
+Resource Constraints: Limited computing infrastructure may constrain experimentation with deep models, but efficient machine learning algorithms will be prioritized.
+1.7 Significance of the Study
+This project fits under SDG 3 (Good Health and Well-being) because it targets maternal health and preventing preventable deaths (United Nations, 2015). In Vision 2030 in Kenya, it also falls under the Social Pillar that focuses on improved delivery of health.
+The significance lies in demonstrating how artificial intelligence can be applied within a low-resource setting in order to empower health workers, enhance healthcare systems, and save lives. As a learning exercise, the study adds to the growing evidence on the applicability of machine learning to African healthcare (Mwakio et al., 2023).
+1.8 Chapter Summary
+This chapter begins the project by providing an overview of its international, national, and local context, assessing gaps in current maternal health surveillance, and crafting the problem statement. The chapter also presents the purpose, research questions, scope, limitations, and relevance of the study. The next chapter will present related literature on uses of machine learning in healthcare and maternal health and theoretical frameworks for the system design.
+CHAPTER TWO: LITERATURE REVIEW
+2.0 Introduction
+A literature review critically examines previous work relevant to a research problem and positions the current study within that context. This chapter reviews machine learning applications in maternal health, comparing representative systems from high- and low-resource settings, and highlighting strengths and weaknesses that motivate the proposed lightweight maternal health risk prediction system.
+2.1 Analysis, Comparison, and Criticism of Existing Projects
+2.1.1 System One: EHR-based Preterm/Complication Prediction (United States)
+In high-income settings, large electronic health record (EHR) datasets are used with machine learning to predict outcomes such as preterm birth and postpartum complications. These systems combine longitudinal clinical measurements, laboratory results, and demographic data to achieve strong predictive performance, often with Area Under the Curve (AUC) values ranging from 0.75 to 0.90 (Sun et al., 2022). Such models have been deployed in tertiary hospitals to prioritize monitoring and interventions.
+Strengths: The use of rich longitudinal data, advanced IT infrastructure, and robust regulatory frameworks (e.g., HIPAA) enhances accuracy and data privacy.
+Weaknesses: These systems depend on comprehensive EHR infrastructure and large, labeled datasets, making them resource-intensive and unsuitable for low-resource settings where such infrastructure is absent (Desai, Li, & Arnold, 2021).
+2.1.2 System Two: Facility Delivery Prediction (Kenya)
+Suh, Yoon, and Chen (2022) developed a machine learning model to predict whether expectant mothers in Kenya would deliver in a health facility. The model used socio-demographic and healthcare access variables derived from survey data to classify women based on their likelihood of facility delivery.
+Strengths: The approach is localized, practical, and based on data readily available in low-resource contexts. It demonstrates how machine learning can inform public health planning and targeted interventions.
+Weaknesses: The system predicts service utilization (facility delivery) rather than clinical complications, limiting its impact on real-time maternal risk management.
+2.1.3 System Three:  Postpartum Hemorrhage (PPH) Prediction (Kenya)
+Mwakio, Otieno, and Wanyama (2023) applied machine learning models to clinical data from Kenyan mothers to predict postpartum hemorrhage (PPH). Using features such as maternal age, blood pressure, and previous pregnancy history, the study successfully identified women at high risk of PPH.
+Strengths: This system was validated using Kenyan data, proving that machine learning can be effectively localized for clinical use.
+Weaknesses: It focuses narrowly on a single complication, limiting broader application to overall maternal health risk prediction.
+2.1.4 Summary Comparison
+Feature / System
+US EHR-based Prediction
+Kenya — Facility Delivery (Suh et al., 2022)
+Kenya — PPH Prediction (Mwakio et al., 2023)
+Primary Goal
+Predict clinical complications (e.g., preterm, PPH)
+Predict likelihood of facility delivery
+Predict postpartum hemorrhage
+Data Needs
+Large EHR and lab datasets
+Household and demographic survey data
+Clinical antenatal and intrapartum data
+Feasibility in Rural Kenya
+Low
+High
+Moderate
+Scalability
+High (requires strong infrastructure)
+High
+Moderate
+Security/Privacy
+Strong (regulated frameworks)
+Moderate
+Moderate
+Strength
+High predictive accuracy and integration with hospital systems
+Locally relevant and low-cost
+Clinically actionable for specific condition
+Limitation
+Not portable to low-resource clinics
+Predicts utilization, not clinical risk
+Focused on one complication
+(Sources: Sun et al., 2022; Suh et al., 2022; Mwakio et al., 2023; Kenya National Bureau of Statistics [KNBS], 2023)
+2.2 Literature Review Based on Research Objectives
+2.2.1 Challenges of Old Systems
+Fragmented and paper-based records: Many sub-county and rural clinics still rely on manual record keeping, which limits continuity of care and rapid risk scoring (KNBS, 2023).
+Reactive healthcare: Existing digital systems primarily track appointments and reminders rather than predicting risk before complications arise (World Health Organization [WHO], 2025).
+Infrastructure mismatch: Machine learning models from high-income countries assume the presence of electronic health systems and standardized laboratory data, which are not widely available in Kenya (Sun et al., 2022).
+Narrow scope of existing local ML work: Current models in Kenya focus on individual outcomes such as PPH or facility delivery rather than comprehensive maternal health risk prediction (Mwakio et al., 2023; Suh et al., 2022).
+2.2.2 Benefits of the Proposed System
+Early, actionable risk detection: Identifies mothers needing attention or referral before complications escalate.
+Practical data requirements: Uses a minimal set of clinical and demographic variables (e.g., age, parity, blood pressure, ANC attendance) available in most Kenyan clinics.
+Scalability and low cost: Lightweight machine learning models can operate on basic infrastructure or cloud platforms with minimal resources.
+Improved triage and resource allocation: Risk scores help health workers prioritize patients and manage limited resources effectively (Maina et al., 2024).
+2.3 Chapter Summary
+The reviewed systems demonstrate the potential of machine learning in improving maternal health outcomes. However, most existing solutions either require advanced infrastructure or focus on a single aspect of maternal care. The proposed system addresses these limitations by offering a comprehensive, lightweight, and locally adaptable model that predicts multiple maternal health risks in real time.
+CHAPTER THREE: RESEARCH DESIGN AND METHODOLOGY
+3.0 Introduction
+This chapter presents the research design and methodology applied in developing the maternal health risk prediction system. The project follows a systems-oriented approach based on the Software Development Life Cycle (SDLC) model, which provides a structured framework for developing, testing, and deploying the system. The methodology emphasizes reliability, usability, and security to ensure the system performs effectively in real-world healthcare settings.
+Since the project involves both research and practical implementation, the chapter explains the research design approach, SDLC phases, testing procedures, and ethical and data protection considerations. The goal is to ensure that the proposed solution is not only technically sound but also contextually relevant to the Kenyan healthcare environment.
+3.1 Locality of the Project and Beneficiaries
+The project targets rural and sub-county health facilities in Kenya, where access to advanced diagnostic tools and electronic health systems is often limited. Many maternal deaths in such regions occur due to delays in identifying and managing high-risk pregnancies (World Health Organization [WHO], 2025). The proposed system seeks to empower nurses, clinical officers, and midwives by providing real-time risk predictions that can guide timely referrals and interventions.
+The primary beneficiaries of the system include:
+Expectant mothers, who will benefit from early risk identification and preventive care.
+Healthcare workers, who will gain a decision-support tool to assist in prioritizing high-risk cases.
+County health management teams, who can use aggregated data for planning and policy decisions.
+The national healthcare system, which stands to benefit from reduced maternal mortality and improved data-driven maternal health surveillance.
+3.2 Research Design Approach: Descriptive and Applied
+The research design combines both descriptive and applied approaches.
+Descriptive Research: This component involves analyzing existing maternal health systems, reviewing relevant literature, and identifying gaps in how machine learning (ML) has been applied in low-resource settings (KNBS, 2023).
+Applied Research: This component focuses on developing a working prototype: a machine learning–based system that predicts maternal health risks using accessible data inputs. The system’s performance will be evaluated based on predictive accuracy and user feedback from test scenarios.
+This dual design ensures that the research not only contributes theoretical knowledge but also offers a practical, implementable solution aligned with Kenya’s maternal health priorities (Maina, Macharia, Mumo, & Okiro, 2024).
+3.3 SDLC Approach (Phased Plan)
+The Software Development Life Cycle (SDLC) provides the structure for building and validating the proposed system. The chosen model follows six main phases: planning, analysis, design, implementation, testing, and maintenance.
+3.3.1 Planning
+In this phase, the overall objectives, scope, and requirements of the project are defined. Key activities include:
+Establishing clear goals: to predict maternal health risks using machine learning models based on accessible clinic data.
+Identifying stakeholders: healthcare workers, county health officers, and policymakers.
+Defining project resources: such as hardware, software tools (Python, Flask, PostgreSQL), and data sources (e.g., KDHS).
+Outlining ethical and legal compliance, particularly concerning data handling under the Data Protection Act (2019).
+Proper planning ensures the project aligns with Kenya’s Vision 2030 health pillar and the Sustainable Development Goal (SDG) 3: Good Health and Well-being (United Nations, 2015).
+3.3.2 Analysis
+The analysis phase focuses on defining system requirements and understanding user needs.
+Functional requirements include the ability to input patient data, process it using an ML model, and display risk predictions.
+Non-functional requirements include system usability, scalability, and security.
+This phase also identifies input variables (maternal age, blood pressure, parity, ANC visits, haemoglobin levels) based on availability in Kenyan health facilities (KNBS, 2023). The analysis ensures the system is feasible within rural clinic constraints and adaptable to their workflow.
+3.3.3 Design
+The design phase translates requirements into a technical blueprint.
+System Architecture: The system is modular, consisting of data preprocessing, ML model training and prediction, and a web-based user interface.
+Database Design: The system utilizes a NoSQL database (MongoDB) to store input data and prediction results in a flexible, document-based structure. This approach allows the system to handle incomplete or inconsistent maternal health records, which are common in rural Kenyan clinics. MongoDB’s schema-less design accommodates evolving data requirements without frequent structural changes. Although relational databases such as PostgreSQL offer advanced built-in security and transaction management, MongoDB will be chosen for its developer familiarity, ease of setup, and adaptability to low-resource environments. To ensure data integrity and confidentiality, the database employs authentication, role-based access control, and encryption for both data in transit and at rest, in line with Kenya’s Data Protection Act (2019).
+User Interface Design: The interface will be kept simple and intuitive, allowing quick data entry and clear display of results, even on low-bandwidth connections.
+Security Design: Security principles from the OWASP Top 10 are applied to mitigate threats such as injection attacks, broken access control, and insecure communications (OWASP, 2021).
+3.3.4 Implementation
+In this phase, the actual system is developed.
+The ML model is implemented in Python using libraries such as pandas, NumPy, and scikit-learn. Candidate algorithms include logistic regression, random forest, and gradient boosting, selected for their balance of accuracy and interpretability.
+The backend is developed using the Django framework, which handles data flow between the ML model and user interface.
+The frontend is developed using HTML, CSS, and JavaScript, optimized for usability.
+The prototype is hosted on a cloud platform such as Heroku or Render for demonstration and scalability testing.
+This implementation strategy allows flexibility, ease of deployment, and accessibility in a variety of clinic environments.
+3.3.5 Testing
+System testing is conducted after implementation to ensure that all modules perform as expected and that the system meets functional and non-functional requirements. Testing includes unit, integration, and system-level verification to ensure smooth operation across all components.
+3.3.6 Deployment and Maintenance
+After testing, the system is deployed in a pilot environment or simulated clinic. User feedback from healthcare workers is collected to refine both the interface and predictive model. Continuous monitoring is maintained, and periodic retraining of the model is planned as more local data becomes available, improving accuracy and adaptability over time.
+3.4 System Testing Plan
+3.4.1 Functional Testing
+Functional testing ensures that all system components work correctly and as specified. Key checks include:
+Validation of user inputs to prevent invalid data entries.
+Correct execution of prediction functions.
+Smooth communication between the user interface, backend, and ML model.
+Proper functioning of authentication and role-based access control to protect sensitive data.
+Successful functional testing confirms that each part of the system operates harmoniously as an integrated whole.
+3.4.2 Model Evaluation Metrics
+The model’s performance is evaluated using a combination of statistical and diagnostic metrics to ensure predictive reliability and clinical relevance:
+Accuracy: Indicates the overall correctness of predictions.
+Sensitivity (Recall): Measures how effectively the model identifies high-risk mothers: a crucial metric since missing a high-risk case could have serious consequences.
+Specificity: Reflects the model’s ability to identify low-risk cases accurately, reducing false alarms.
+Precision: Assesses how many of the cases predicted as high-risk are truly high-risk, ensuring clinicians can trust the predictions.
+F1 Score: Balances precision and recall, providing a single comprehensive performance measure.
+ROC Curve and AUC: Evaluate how well the model distinguishes between high-risk and low-risk categories across various thresholds.
+Calibration Plots: Confirm whether predicted probabilities align with real-world outcomes.
+A confusion matrix is also used to visualize classification performance, highlighting false positives and false negatives. Special focus is placed on minimizing false negatives, as these represent missed high-risk cases that could endanger maternal health.
+3.4.3 Performance Testing
+Performance testing evaluates system responsiveness and reliability. The system’s ability to handle multiple concurrent users is tested, ensuring it can perform efficiently under realistic workloads. Predictions are expected to be generated in under two seconds, even in low-connectivity environments, which is crucial for use in rural health facilities.
+3.4.4 Usability Testing
+Usability testing ensures the system is intuitive and easy to use. Healthcare workers or test participants simulate patient data entry and interpret results. Feedback is collected through structured questionnaires such as the System Usability Scale (SUS) and open-ended interviews. The findings guide interface improvements and ensure the system fits into existing clinical workflows.
+3.4.5 Compatibility Testing
+Compatibility testing ensures the system operates effectively across devices and platforms. Tests are performed on desktops, tablets, and Android phones commonly used in clinics, and across browsers such as Chrome, Firefox, and Edge. This ensures consistent performance and accessibility across different technological environments.
+3.5 Security Testing
+3.5.1 Legal and Regulatory Alignment
+The system complies with Kenya’s Data Protection Act (2019) and follows the principles outlined by the Office of the Data Protection Commissioner. Data minimization, anonymization, and consent-based processing are implemented. Encryption and secure transmission protocols (HTTPS/TLS) protect sensitive health information (Government of Kenya, 2019).
+3.5.2 Threat Modeling and OWASP Mapping
+Security threats are identified using the STRIDE threat modeling framework and mitigated according to the OWASP Top 10 Web Application Security Risks. These include preventing broken authentication, data exposure, and injection attacks (OWASP, 2021). By anticipating these threats early in design, the system achieves higher resilience against cyberattacks.
+3.5.3 Security Tests
+Security testing includes:
+Static code analysis to detect insecure coding patterns.
+Vulnerability scanning using automated tools.
+Penetration testing to simulate real-world attacks and assess defenses.
+Encryption validation to confirm secure data storage and transmission.
+Access control verification to ensure only authorized users can access patient information.
+3.5.4 Data Handling Safeguards
+During development and testing, only anonymized or synthetic data is used. Access logs are maintained, and data retention policies follow national regulations. An incident response plan outlines procedures for detecting, reporting, and mitigating data breaches in compliance with the Data Protection Act.
+3.5.5 MongoDB Security and Compliance Measures
+Given that the system handles sensitive maternal health data, security and privacy are central design considerations. While MongoDB’s flexibility makes it well-suited for unstructured or semi-structured clinical data, it also necessitates deliberate security configurations to prevent unauthorized access and data breaches.
+The system incorporates multiple layers of security controls:
+Authentication and Role-Based Access Control (RBAC): Only authorized users can access or modify data, with roles defined based on responsibilities (e.g., clinician, administrator, developer).
+Network and Access Restrictions: The database is configured to accept connections only from approved IP addresses, reducing exposure to external threats.
+Data Encryption: All data transmissions are secured via HTTPS/TLS, and data stored in the database is encrypted at rest.
+Input Validation: Application-level validation ensures that no malicious data (e.g., through NoSQL injection) can be processed by the system.
+Audit Logging and Monitoring: User activities and database events are logged to detect suspicious access or modification attempts.
+Data Minimization and Anonymization: Patient identifiers are excluded or anonymized before storage, ensuring compliance with the Kenya Data Protection Act (2019) and WHO data privacy guidelines (WHO, 2025).
+Collectively, these measures ensure that while MongoDB provides the flexibility required for development and scalability, the system remains secure, compliant, and ethically responsible in its handling of sensitive maternal health information.
+3.6 Data Handling and Analysis
+3.6.1 Data Sources and Preparation
+Data is sourced from publicly available datasets such as the Kenya Demographic and Health Survey (KDHS) and other open maternal health datasets. Where necessary, synthetic data is generated to represent real-world distributions of maternal indicators (KNBS, 2023). All data undergoes cleaning, normalization, and encoding to maintain consistency and quality.
+3.6.2 Analysis Plan
+The dataset is divided into three parts: training (60%), validation (20%), and testing (20%). Stratified sampling ensures balanced representation of different risk categories. Cross-validation improves reliability and reduces bias.
+Feature importance methods such as SHAP (SHapley Additive exPlanations) or permutation importance are applied to interpret model predictions, helping clinicians understand which factors most influence risk classification (Sun et al., 2022).
+3.6.3 Validation Strategy
+Validation is performed in three stages:
+Internal validation: The model is tested on holdout data to assess initial performance.
+External validation: The model is tested on new datasets to evaluate generalizability.
+Clinical validation: Predictions are compared with clinician assessments and real patient outcomes where available, ensuring the model’s predictions are clinically meaningful.
+3.7 Ethical Considerations
+The project upholds ethical principles of privacy, fairness, and transparency. Anonymized or synthetic data is used to avoid exposing personal information. If real patient data is utilized in future stages, ethical approval will be obtained from a recognized research ethics committee. The system is designed as a decision-support tool, not a replacement for clinical expertise, thereby complementing rather than substituting human judgment (WHO, 2025).
+3.8 Chapter Summary
+This chapter has outlined the research design and methodology guiding the project. The SDLC model provides a clear structure for planning, analysis, design, implementation, and testing. Detailed testing strategies, including functional, performance, and security validation, ensure reliability and compliance. The approach also incorporates ethical and data protection safeguards, positioning the system as a responsible and innovative solution to Kenya’s maternal health challenges.
+CHAPTER FOUR: SYSTEM ANALYSIS AND DESIGN
+4.0 Introduction
+This chapter presents the technical design of the proposed Machine Learning Model for Predicting Maternal Health Risks in Kenya. It serves as the bridge between the research findings and the actual system implementation. The chapter outlines the system requirements, identifies the main stakeholders, and explains the system’s overall structure using several design models and diagrams. These models describe how users, components, and data interact within the system to achieve the project’s objectives.
+The design focuses on simplicity, accuracy, and security , ensuring that the solution remains practical for both rural and urban health facilities across Kenya. The system combines a Django-based web platform, a machine learning model built using scikit-learn, and a MongoDB database to provide a scalable, secure, and user-friendly tool for early maternal risk prediction.
+4.1 System Requirements
+4.1.1 Functional Requirements
+Functional requirements describe what the system should be able to do in order to meet its intended purpose. The system will:
+Allow users (health workers) to log in securely using Django’s built-in authentication system.
+Enable data entry of maternal health indicators such as age, parity, blood pressure, ANC attendance, and other basic health parameters.
+Validate input data to ensure accuracy and completeness before processing.
+Process the data through a trained machine learning model , initially Logistic Regression, with flexibility to upgrade to a Random Forest model for improved performance.
+Display prediction results with a clear risk score and recommended action (e.g., Low Risk, Moderate Risk, or High Risk).
+Allow administrators to manage user accounts, roles, and system settings.
+Store patient and prediction data securely in a MongoDB database.
+Provide a dashboard for county health officers to view reports, performance metrics, and statistical summaries.
+Support exporting anonymized reports for public health analysis or policy decision-making.
+4.1.2 Non-Functional Requirements
+The non-functional requirements define how well the system performs rather than what it does. The system must meet the following criteria:
+Performance: Each prediction should be processed in under two seconds per record.
+Scalability: The Django architecture should support multiple concurrent users across different clinics.
+Usability: The interface should remain simple, responsive, and compatible with low-end devices available in most Kenyan facilities.
+Security: All user sessions and stored data must comply with Kenya’s Data Protection Act (2019), using HTTPS encryption, role-based access control, and secure password hashing.
+Availability: The cloud-hosted system (Heroku or Render) should maintain at least 95% uptime.
+Maintainability: The modular structure of Django views, models, and templates allows for easy updates and debugging.
+Portability: The web application should run smoothly on mobile browsers, desktops, and tablets without additional setup.
+Data Integrity: Each transaction should be validated and logged to prevent loss, duplication, or unauthorized modification.
+4.2 Stakeholders and Their Roles
+Stakeholder
+Role / Description
+System Administrator
+Manages user accounts, monitors database integrity, configures system parameters, and ensures compliance with data security policies.
+Health Worker / Nurse
+Main user responsible for entering patient data, interpreting risk predictions, and acting on recommendations.
+County Health Officer
+Reviews aggregated reports and system analytics for planning and allocation of maternal health resources.
+Developers / Data Scientists
+Build, train, and maintain the machine learning model and Django system. Handle testing, updates, and scalability improvements.
+Patients (Expectant Mothers)
+Indirect beneficiaries who receive early interventions and improved care from health workers using the system.
+4.3 System Models
+4.3.1 System Architecture Diagram
+The system is structured into three main layers:
+Presentation Layer: The user interface built using Django templates (HTML, CSS, JavaScript).
+Application Layer: The Django backend processes user input, runs the scikit-learn model, and returns predictions.
+Data Layer: MongoDB stores user credentials, patient details, and prediction results.
+This layered design promotes scalability, maintainability, and data security.
+[ Figure 4.1: System Architecture Diagram]
+4.3.2 Use Case Diagram
+The use case diagram shows how different users interact with the system. Main actions include: Login, Input Patient Data, Generate Prediction, View Results, Manage Users, and View Reports.
+Actors: Health Worker, System Administrator, and County Health Officer.
+ 
+[Figure 4.2: Use Case Diagram]
+4.3.3 System Flowchart
+The system flowchart represents the main logical flow of operations:
+The health worker logs in.
+Credentials are verified by Django’s authentication system.
+The user enters patient data into a web form.
+Input validation ensures the data is clean.
+The ML model processes the data to predict risk.
+Results are displayed and stored in MongoDB.
+The health worker can view, print, or export results.
+[Figure 4.3: System Flowchart]
+4.3.4 Class Diagram
+Core system classes include:
+User (userID, name, email, role, password)
+Patient (patientID, name, age, parity, BP, ANC_visits)
+Prediction (predictionID, patientID, riskLevel, score, date)
+Model (modelType, version, accuracy)
+Relationships:
+User 1.. → Prediction*
+Patient 1.. → Prediction*
+AuthManager → User (uses / manages)
+Prediction → MLModel (depends on / calls)
+[Figure 4.4: Class Diagram]
+4.3.5 Data Flow Diagrams (DFDs)
+Context Diagram:
+Shows the system boundary and how external users (Health Worker, Administrator, County Officer) interact with the Maternal Risk Prediction System.
+[Figure 4.5: Context Diagram]
+Level 1 DFD:
+Illustrates internal processes; user management, data input, prediction generation, and report viewing.
+[Figure 4.6: Level 1 Data Flow Diagram]
+Level 2 DFD:
+Breaks down the prediction process: input parameters → model computation (logistic regression or random forest) → risk classification → database storage.
+[Figure 4.7: Level 2 Data Flow Diagram]
+4.3.6 Entity Relationship Diagram (ERD)
+The MongoDB schema uses collections instead of tables:
+Users: credentials, roles, access levels
+Patients: personal and clinical data
+Predictions: results and timestamps 
+AuditLogs: user actions and system activities
+Each Prediction references a Patient, and AuditLogs record all activity for accountability. Django integrates with MongoDB through djongo or PyMongo for flexible schema handling.
+[Figure 4.8: ERD (MongoDB Schema)]
+4.3.7 Sequence Diagrams
+Admin Sequence:
+Admin logs in → credentials verified → new user added → confirmation message displayed.
+[Figure 4.9: Admin Sequence Diagram]
+User Sequence:
+Health worker logs in → inputs data → model predicts risk → system saves and displays result.
+[Figure 4.10: User Sequence Diagram]
+4.3.8 User Interface Wireframes
+Wireframe 1: Maternal Data Entry Screen
+Simple, form-based design using Django templates. Health workers input patient details and submit data.
+[Figure 4.11: Maternal Data Entry Screen Wireframe]
+Wireframe 2: Prediction Result Screen
+Displays the patient’s risk category with recommendations and a print option.
+[Figure 4.12: Prediction Result Screen Wireframe]
+4.4 System Description Summary
+The proposed system integrates Django, scikit-learn, and MongoDB into one seamless framework. Health workers input maternal data, the ML model generates a risk prediction, and the results are securely stored and displayed. The architecture supports easy scaling and future enhancements, such as adding new models or chatbot interfaces, without major structural changes.
+REFERENCES
+Desai, R., Li, T., & Arnold, D. (2021). Predicting preterm births using machine learning and electronic health records in the United States. Journal of Biomedical Informatics, 118, 103788.
+Government of Kenya. (2019). Data Protection Act, No. 24 of 2019. Nairobi: National Council for Law Reporting.
+Kenya National Bureau of Statistics (KNBS). (2023). Kenya Demographic and Health Survey 2022: Key Indicators Report. Nairobi: KNBS. https://www.knbs.or.ke/reports/kdhs-2022
+Maina, I., Macharia, P., Mumo, J., & Okiro, E. (2024). Bridging data gaps: Predicting sub-national maternal mortality rates in Kenya using machine learning models. International Journal of Population Data Science, 9(2), 1–12. https://pubmed.ncbi.nlm.nih.gov/39600732/
+Mwakio, P., Otieno, F., & Wanyama, R. (2023). Prediction of postpartum hemorrhage using machine learning algorithms in a Kenyan population. Frontiers in Global Women’s Health, 4, 1161157. https://pubmed.ncbi.nlm.nih.gov/37575959/
+Open Web Application Security Project (OWASP). (2021). OWASP Top Ten Web Application Security Risks. https://owasp.org/www-project-top-ten/
+Suh, J., Yoon, H., & Chen, J. (2022). Machine learning for maternal health: Predicting facility delivery among women in Kenya. Frontiers in Digital Health, 4, 855236.
+Sun, Q., et al. (2022). Machine learning-based prediction model of preterm birth. Journal of Biomedical Informatics, 125, 103788.
+United Nations. (2015). Transforming our world: The 2030 agenda for sustainable development. United Nations. https://sdgs.un.org/2030agenda
+World Health Organization (WHO). (2023). Maternal mortality fact sheet. Geneva: WHO. https://www.who.int/news-room/fact-sheets/detail/maternal-mortality
+World Health Organization (WHO). (2025). Trends in maternal mortality 2000 to 2023: Estimates by WHO, UNICEF, UNFPA, World Bank Group and the United Nations Population Division. Geneva: WHO.

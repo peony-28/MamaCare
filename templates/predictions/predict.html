@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Predict Maternal Health Risk - MamaCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">
+    <i class="fas fa-stethoscope"></i> Maternal Health Risk Prediction
+</h2>
+<p class="text-muted mb-4">Enter patient information to get a comprehensive risk assessment</p>
+
+<form method="post" id="predictionForm">
+    {% csrf_token %}
+    
+    <!-- Patient Information -->
+    <div class="form-section" style="background: #e8f4f8; border-left: 4px solid #007bff;">
+        <h5><i class="fas fa-user"></i> Patient Information</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.patient_id.label_tag }}
+                {{ form.patient_id }}
+                {% if form.patient_id.help_text %}
+                    <small class="form-text text-muted">{{ form.patient_id.help_text }}</small>
+                {% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.patient_name.label_tag }}
+                {{ form.patient_name }}
+                {% if form.patient_name.errors %}
+                    <div class="text-danger">{{ form.patient_name.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- General Health Parameters -->
+    <div class="form-section">
+        <h5><i class="fas fa-heartbeat"></i> General Health Parameters</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                {{ form.age.label_tag }}
+                {{ form.age }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.systolic_bp.label_tag }}
+                {{ form.systolic_bp }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.diastolic_bp.label_tag }}
+                {{ form.diastolic_bp }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.bs.label_tag }}
+                {{ form.bs }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.body_temp.label_tag }}
+                {{ form.body_temp }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.heart_rate.label_tag }}
+                {{ form.heart_rate }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.bmi_val.label_tag }}
+                {{ form.bmi_val }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pregnancy History -->
+    <div class="form-section">
+        <h5><i class="fas fa-baby"></i> Pregnancy History</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                {{ form.gravida.label_tag }}
+                {{ form.gravida }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.parity.label_tag }}
+                {{ form.parity }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.gestational_age_weeks.label_tag }}
+                {{ form.gestational_age_weeks }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.num_pregnancies.label_tag }}
+                {{ form.num_pregnancies }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.gestation_previous_pregnancy.label_tag }}
+                {{ form.gestation_previous_pregnancy }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Medical History -->
+    <div class="form-section">
+        <h5><i class="fas fa-file-medical"></i> Medical History</h5>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                {{ form.previous_complications.label_tag }}
+                {{ form.previous_complications }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.preexisting_diabetes_flag.label_tag }}
+                {{ form.preexisting_diabetes_flag }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.gestational_diabetes_flag_gen_model.label_tag }}
+                {{ form.gestational_diabetes_flag_gen_model }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.mental_health.label_tag }}
+                {{ form.mental_health }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.diabetes_history_preeclampsia.label_tag }}
+                {{ form.diabetes_history_preeclampsia }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.history_hypertension.label_tag }}
+                {{ form.history_hypertension }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.family_history.label_tag }}
+                {{ form.family_history }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.unexplained_prenatal_loss.label_tag }}
+                {{ form.unexplained_prenatal_loss }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.large_child_birth_default.label_tag }}
+                {{ form.large_child_birth_default }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.pcos.label_tag }}
+                {{ form.pcos }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.sedentary_lifestyle.label_tag }}
+                {{ form.sedentary_lifestyle }}
+            </div>
+            <div class="col-md-3 mb-3">
+                {{ form.prediabetes_flag_gdm.label_tag }}
+                {{ form.prediabetes_flag_gdm }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lab Values -->
+    <div class="form-section">
+        <h5><i class="fas fa-flask"></i> Laboratory Values</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                {{ form.hemoglobin_val.label_tag }}
+                {{ form.hemoglobin_val }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.hdl.label_tag }}
+                {{ form.hdl }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.ogtt.label_tag }}
+                {{ form.ogtt }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fetal Parameters -->
+    <div class="form-section">
+        <h5><i class="fas fa-baby"></i> Fetal & Amniotic Parameters</h5>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                {{ form.fetal_weight_kgs.label_tag }}
+                {{ form.fetal_weight_kgs }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.protein_uria.label_tag }}
+                {{ form.protein_uria }}
+            </div>
+            <div class="col-md-4 mb-3">
+                {{ form.amniotic_fluid_levels_cm.label_tag }}
+                {{ form.amniotic_fluid_levels_cm }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-calculator"></i> Predict Risk
+        </button>
+    </div>
+</form>
+{% endblock %}
+

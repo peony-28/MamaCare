@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: mamacare
+    env: python
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn mamacare_project.wsgi:application
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: ${RENDER_SERVICE_NAME}.onrender.com
+      - key: MONGODB_HOST
+        sync: false
+      - key: MONGODB_NAME
+        value: mamacare_db
+      - key: MONGODB_USERNAME
+        sync: false
+      - key: MONGODB_PASSWORD
+        sync: false
+
