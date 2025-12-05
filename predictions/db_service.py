@@ -22,43 +22,62 @@ class MongoDBService:
         """Establish connection to MongoDB"""
         try:
             mongodb_config = settings.MONGODB_SETTINGS
-            connection_string = mongodb_config['host']
+            connection_string = mongodb_config['host'].strip()
             db_name = mongodb_config['name']
             
-            # If connection string already has credentials, use it as-is
-            # Otherwise, build connection string with credentials if provided
+            # Validate connection string starts correctly
+            if not (connection_string.startswith('mongodb://') or connection_string.startswith('mongodb+srv://')):
+                raise ValueError("MONGODB_HOST must start with 'mongodb://' or 'mongodb+srv://'")
+            
+            # If connection string already has credentials (@ symbol), use it as-is
             if '@' not in connection_string:
                 username = mongodb_config.get('username', '')
                 password = mongodb_config.get('password', '')
                 if username and password:
-                    # URL encode password (handle special characters)
+                    # URL encode username and password (handle special characters)
                     from urllib.parse import quote_plus
                     encoded_password = quote_plus(password)
                     encoded_username = quote_plus(username)
                     
-                    # Parse and rebuild connection string
-                    if connection_string.startswith('mongodb://'):
-                        # Extract host part (remove mongodb://)
-                        host_part = connection_string.replace('mongodb://', '')
-                        connection_string = f"mongodb://{encoded_username}:{encoded_password}@{host_part}"
-                    elif connection_string.startswith('mongodb+srv://'):
-                        # Extract host part (remove mongodb+srv://)
-                        host_part = connection_string.replace('mongodb+srv://', '')
-                        connection_string = f"mongodb+srv://{encoded_username}:{encoded_password}@{host_part}"
+                    # Parse connection string properly
+                    if connection_string.startswith('mongodb+srv://'):
+                        # Extract everything after mongodb+srv://
+                        rest = connection_string[14:]  # len('mongodb+srv://') = 14
+                        # Build new connection string with credentials
+                        connection_string = f"mongodb+srv://{encoded_username}:{encoded_password}@{rest}"
+                    elif connection_string.startswith('mongodb://'):
+                        # Extract everything after mongodb://
+                        rest = connection_string[10:]  # len('mongodb://') = 10
+                        # Build new connection string with credentials
+                        connection_string = f"mongodb://{encoded_username}:{encoded_password}@{rest}"
             
-            # Ensure database name is in connection string if not already there
-            if db_name and db_name not in connection_string:
-                # Add database name to connection string
-                if '?' in connection_string:
-                    connection_string = connection_string.replace('?', f'/{db_name}?')
-                else:
-                    connection_string = f"{connection_string.rstrip('/')}/{db_name}"
+            # Extract database name from connection string if present, otherwise use config
+            # MongoDB connection strings can have: mongodb+srv://user:pass@host/dbname?options
+            if '/' in connection_string.split('@')[-1]:
+                # Database name might already be in connection string
+                parts = connection_string.split('?')
+                base_part = parts[0]
+                query_part = '?' + parts[1] if len(parts) > 1 else ''
+                
+                if '/' in base_part.split('@')[-1]:
+                    # Database name is in connection string, extract it
+                    path_parts = base_part.split('/')
+                    if len(path_parts) > 1:
+                        # Use database from connection string
+                        db_name_from_uri = path_parts[-1].split('?')[0]
+                        if db_name_from_uri:
+                            db_name = db_name_from_uri
             
             # Increase timeout for Atlas connections
             timeout_ms = 15000 if 'mongodb+srv' in connection_string else 10000
             
             print(f"Attempting MongoDB connection...")
-            print(f"Connection string: {connection_string.split('@')[0]}@***")  # Hide password in logs
+            # Hide password in logs - show only scheme and host
+            if '@' in connection_string:
+                scheme_host = connection_string.split('@')[1].split('/')[0]
+                print(f"Connection string: {connection_string.split('://')[0]}://***@{scheme_host}")
+            else:
+                print(f"Connection string: {connection_string.split('@')[0]}@***")
             
             self.client = MongoClient(
                 connection_string, 
@@ -86,8 +105,9 @@ class MongoDBService:
                 print("💡 Tip: Make sure password is URL-encoded if it contains special characters.")
             elif 'dns' in error_msg.lower() or 'resolve' in error_msg.lower():
                 print("💡 Tip: Check your MongoDB connection string (MONGODB_HOST) in Render environment variables.")
-            elif 'Invalid URI scheme' in error_msg:
+            elif 'Invalid URI scheme' in error_msg or 'must start with' in error_msg:
                 print("💡 Tip: MONGODB_HOST must start with 'mongodb://' or 'mongodb+srv://'")
+                print("💡 Tip: Example: mongodb+srv://cluster.mongodb.net/")
             else:
                 print("💡 Tip: Check Render logs for detailed error information.")
                 import traceback
@@ -704,26 +724,8 @@ class MongoDBService:
             print(f"Error fetching patients list: {e}")
             return []
     
-    def log_action(self, user_id, action_type, description, details=None):
-        """Log system actions for audit trail"""
-        if self.db is None:
-            return None
-        
-        try:
-            log_entry = {
-                'user_id': str(user_id),
-                'action_type': action_type,  # 'prediction', 'patient_created', 'user_modified', etc.
-                'description': description,
-                'details': details or {},
-                'created_at': datetime.utcnow(),
-                'ip_address': None  # Can be added from request if needed
-            }
-            
-            result = self.db.audit_logs.insert_one(log_entry)
-            return str(result.inserted_id)
-        except Exception as e:
-            print(f"Error logging action: {e}")
-            return None
+    # Note: log_action is already defined above at line 520
+    # This duplicate definition is removed to avoid conflicts
     
     def get_audit_logs(self, user_id=None, action_type=None, limit=100):
         """Get audit logs with optional filters"""

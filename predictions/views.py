@@ -43,22 +43,43 @@ def register_view(request):
 
 def login_view(request):
     """User login view"""
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+    try:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            
+            if not username or not password:
+                messages.error(request, 'Please provide both username and password.')
+                return render(request, 'predictions/login.html')
+            
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                # Log login (don't fail if MongoDB is not available)
+                try:
+                    db_service.log_action(user.id, 'login', {'username': username})
+                except Exception as e:
+                    # Log but don't fail login if MongoDB is unavailable
+                    print(f"Warning: Could not log login action: {e}")
+                return redirect('predict')
+            else:
+                messages.error(request, 'Invalid username or password.')
+                # Log failed login attempt (don't fail if MongoDB is not available)
+                try:
+                    db_service.log_action(None, 'login_failed', {'username': username})
+                except Exception as e:
+                    # Log but don't fail if MongoDB is unavailable
+                    print(f"Warning: Could not log failed login attempt: {e}")
         
-        if user is not None:
-            login(request, user)
-            # Log login
-            db_service.log_action(user.id, 'login', {'username': username})
-            return redirect('predict')
-        else:
-            messages.error(request, 'Invalid username or password.')
-            # Log failed login attempt
-            db_service.log_action(None, 'login_failed', {'username': username})
-    
-    return render(request, 'predictions/login.html')
+        return render(request, 'predictions/login.html')
+    except Exception as e:
+        # Catch any unexpected errors and show a user-friendly message
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Login error: {error_details}")
+        messages.error(request, 'An error occurred during login. Please try again or contact support.')
+        return render(request, 'predictions/login.html')
 
 
 @login_required
