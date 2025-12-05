@@ -23,25 +23,42 @@ class MongoDBService:
         try:
             mongodb_config = settings.MONGODB_SETTINGS
             connection_string = mongodb_config['host']
+            db_name = mongodb_config['name']
             
             # If connection string already has credentials, use it as-is
             # Otherwise, build connection string with credentials if provided
             if '@' not in connection_string:
-                if mongodb_config.get('username') and mongodb_config.get('password'):
+                username = mongodb_config.get('username', '')
+                password = mongodb_config.get('password', '')
+                if username and password:
+                    # URL encode password (handle special characters)
+                    from urllib.parse import quote_plus
+                    encoded_password = quote_plus(password)
+                    encoded_username = quote_plus(username)
+                    
                     # Parse and rebuild connection string
                     if connection_string.startswith('mongodb://'):
-                        connection_string = connection_string.replace(
-                            'mongodb://',
-                            f"mongodb://{mongodb_config['username']}:{mongodb_config['password']}@"
-                        )
+                        # Extract host part (remove mongodb://)
+                        host_part = connection_string.replace('mongodb://', '')
+                        connection_string = f"mongodb://{encoded_username}:{encoded_password}@{host_part}"
                     elif connection_string.startswith('mongodb+srv://'):
-                        connection_string = connection_string.replace(
-                            'mongodb+srv://',
-                            f"mongodb+srv://{mongodb_config['username']}:{mongodb_config['password']}@"
-                        )
+                        # Extract host part (remove mongodb+srv://)
+                        host_part = connection_string.replace('mongodb+srv://', '')
+                        connection_string = f"mongodb+srv://{encoded_username}:{encoded_password}@{host_part}"
+            
+            # Ensure database name is in connection string if not already there
+            if db_name and db_name not in connection_string:
+                # Add database name to connection string
+                if '?' in connection_string:
+                    connection_string = connection_string.replace('?', f'/{db_name}?')
+                else:
+                    connection_string = f"{connection_string.rstrip('/')}/{db_name}"
             
             # Increase timeout for Atlas connections
-            timeout_ms = 10000 if 'mongodb+srv' in connection_string else 5000
+            timeout_ms = 15000 if 'mongodb+srv' in connection_string else 10000
+            
+            print(f"Attempting MongoDB connection...")
+            print(f"Connection string: {connection_string.split('@')[0]}@***")  # Hide password in logs
             
             self.client = MongoClient(
                 connection_string, 
@@ -51,8 +68,8 @@ class MongoDBService:
             )
             # Test connection
             self.client.admin.command('ping')
-            self.db = self.client[mongodb_config['name']]
-            print(f"✓ Connected to MongoDB: {mongodb_config['name']}")
+            self.db = self.client[db_name]
+            print(f"✓ Connected to MongoDB: {db_name}")
             print(f"✓ Database ready: {self.db.name}")
             
         except Exception as e:
@@ -63,12 +80,18 @@ class MongoDBService:
             # Provide helpful error messages
             if 'timeout' in error_msg.lower() or 'timed out' in error_msg.lower():
                 print("💡 Tip: Check your internet connection and MongoDB Atlas IP whitelist.")
+                print("💡 Tip: Make sure Render's IP is whitelisted in MongoDB Atlas (or use 0.0.0.0/0 for testing)")
             elif 'authentication' in error_msg.lower() or 'auth' in error_msg.lower():
-                print("💡 Tip: Check your MongoDB username and password in .env file.")
+                print("💡 Tip: Check your MongoDB username and password in Render environment variables.")
+                print("💡 Tip: Make sure password is URL-encoded if it contains special characters.")
             elif 'dns' in error_msg.lower() or 'resolve' in error_msg.lower():
-                print("💡 Tip: Check your MongoDB connection string (MONGODB_HOST) in .env file.")
+                print("💡 Tip: Check your MongoDB connection string (MONGODB_HOST) in Render environment variables.")
+            elif 'Invalid URI scheme' in error_msg:
+                print("💡 Tip: MONGODB_HOST must start with 'mongodb://' or 'mongodb+srv://'")
             else:
-                print("💡 Tip: Run 'python check_mongodb.py' to diagnose the connection issue.")
+                print("💡 Tip: Check Render logs for detailed error information.")
+                import traceback
+                traceback.print_exc()
             
             self.client = None
             self.db = None
