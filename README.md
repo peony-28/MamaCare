@@ -137,7 +137,7 @@ sudo systemctl start mongodb
 4. Update `.env` file:
 
 ```
-MONGODB_HOST=mongodb+srv://username:password@cluster.mongodb.net/
+MONGODB_HOST=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/
 MONGODB_NAME=mamacare_db
 ```
 
